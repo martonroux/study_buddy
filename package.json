@@ -1,19 +1,31 @@
 {
-  "name": "study_budy",
-  "version": "0.0.0",
-  "private": true,
-  "type": "module",
+  "name": "math_test_react_native",
+  "version": "1.0.0",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
   },
   "dependencies": {
-    "vue": "^3.5.13"
+    "@expo/metro-runtime": "~4.0.0",
+    "@react-native-community/blur": "^4.4.1",
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/stack": "^7.1.1",
+    "expo": "~52.0.23",
+    "expo-status-bar": "~2.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-native": "0.76.5",
+    "react-native-web": "~0.19.13",
+    "react-native-webview": "^13.12.5",
+    "expo-blur": "~14.0.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^5.2.1",
-    "vite": "^6.0.5",
-    "vite-plugin-vue-devtools": "^7.6.8"
-  }
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.3.12",
+    "typescript": "^5.3.3"
+  },
+  "private": true
 }
