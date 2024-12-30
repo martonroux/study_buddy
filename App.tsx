@@ -2,15 +2,29 @@ import React from "react";
 import {Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import {BlurView} from "expo-blur";
 import {TextTypes} from "./constants/TextTypes";
-import FlashCard from "./components/FlashCard";
+import FlashCard from "./components/flashCard/FlashCard";
 import {Colors} from "./constants/Colors";
+import FlashCardSeries from "./components/flashCard/FlashCardSeries";
 
 export default function App() {
     return (
         <View style={styles.container}>
-            <FlashCard subject={"Analyse 1"} title={"Dérivation I"} question={
-                "Quelle est la dérivée de: \n$\\frac{u(x)}{v(x)}$ ?"
-            } answer={"\\[ \\frac{u'(x) v(x) - u(x) v'(x)}{v(x)^{2}} \\]"}/>
+            <FlashCardSeries flashCardDataList={
+                [
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation I",
+                        question: "Quelle est la dérivée de: \n$\\frac{u(x)}{v(x)}$ ?",
+                        answer: "\\[ \\frac{u'(x) v(x) - u(x) v'(x)}{v(x)^{2}} \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation I",
+                        question: "Quelle est la dérivée de: \n$\\frac{u(x)}{v(x)}$ ?",
+                        answer: "\\[ \\frac{u'(x) v(x) - u(x) v'(x)}{v(x)^{2}} \\]"
+                    },
+                ]
+            }></FlashCardSeries>
         </View>
     );
 }

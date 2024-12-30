@@ -1,19 +1,21 @@
 import React, {useState, useRef} from "react";
 import {Animated, Image, PanResponder, SafeAreaView, StyleSheet, Text, View} from "react-native";
-import { TextTypes, rem } from "../constants/TextTypes";
-import { Colors } from "../constants/Colors";
-import WebTextDisplay from "./WebTextDisplay";
+import { TextTypes, rem } from "../../constants/TextTypes";
+import { Colors } from "../../constants/Colors";
 import {BlurView} from "expo-blur";
-import {FlashCardFace} from "./flashCard/FlashCardFace";
+import {FlashCardFace} from "./FlashCardFace";
+import {Dimensions} from 'react-native';
 
-const FlashCard = ({ subject, title, question, answer }) => {
+
+const FlashCard = ({ subject, title, question, answer, onSwipe }) => {
     const [flipped, setFlipped] = useState(false);
     const [stopMovement, setStopMovement] = useState(false);
     const flipAnimation = useRef(new Animated.Value(0)).current;
     const pan = useRef(new Animated.ValueXY()).current;
     const isFlipping = useRef(false);
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
 
-    // Interpolation to create front and back rotation
     const frontRotation = flipAnimation.interpolate({
         inputRange: [0, 180],
         outputRange: ["0deg", "180deg"],
@@ -24,67 +26,62 @@ const FlashCard = ({ subject, title, question, answer }) => {
         outputRange: ["180deg", "360deg"],
     });
 
-    // Interpolation for tilt effect
     const tilt = pan.x.interpolate({
-        inputRange: [-200, 0, 200], // Adjust range to control tilt sensitivity
-        outputRange: ["-10deg", "0deg", "10deg"], // Max tilt angles
-        extrapolate: "clamp", // Prevent values from exceeding range
+        inputRange: [-200, 0, 200],
+        outputRange: ["-10deg", "0deg", "10deg"],
+        extrapolate: "clamp",
     });
 
     const rightBoxOpacity = pan.x.interpolate({
-        inputRange: [0, 150],
-        outputRange: [0, 1], // Adjust the opacity based on the drag distance
+        inputRange: [0, windowWidth / 4],
+        outputRange: [0, 1],
         extrapolate: "clamp",
     });
 
     const leftBoxOpacity = pan.x.interpolate({
-        inputRange: [-150, 0],
-        outputRange: [1, 0], // Adjust the opacity based on the drag distance
+        inputRange: [-windowWidth / 4, 0],
+        outputRange: [1, 0],
         extrapolate: "clamp",
     });
 
     const topBoxOpacity = pan.y.interpolate({
-        inputRange: [-150, 0],
-        outputRange: [1, 0], // Adjust the opacity based on the drag distance
+        inputRange: [-windowHeight / 6, 0],
+        outputRange: [1, 0],
         extrapolate: "clamp",
     });
 
     const stopMovementAndReturn = () => {
-        // Animate the card back to the initial position
         Animated.spring(pan, {
             toValue: { x: 0, y: 0 },
             useNativeDriver: false,
         }).start();
     };
 
-    const handleFlip = () => {
-        // Disable dragging while flipping
+    const handleFlip = (fast: Boolean = false) => {
         isFlipping.current = true;
 
-        // Trigger flip animation
         if (flipped) {
             Animated.timing(flipAnimation, {
-                toValue: 0, // Rotate back to 0 degrees
-                duration: 500,
-                useNativeDriver: true,
+                toValue: 0,
+                duration: fast ? 1 : 500,
+                useNativeDriver: false,
             }).start(() => {
-                isFlipping.current = false; // Re-enable dragging once the flip is finished
+                isFlipping.current = false;
             });
         } else {
             Animated.timing(flipAnimation, {
-                toValue: 180, // Rotate to 180 degrees
-                duration: 500,
-                useNativeDriver: true,
+                toValue: 180,
+                duration: fast ? 1 : 500,
+                useNativeDriver: false,
             }).start(() => {
-                isFlipping.current = false; // Re-enable dragging once the flip is finished
+                isFlipping.current = false;
             });
         }
-        setFlipped(!flipped); // Update state
+        setFlipped(!flipped);
     };
 
-    // PanResponder to handle drag gestures
     const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => !isFlipping.current, // Disable pan responder while flipping
+        onStartShouldSetPanResponder: () => !isFlipping.current,
         onPanResponderGrant: () => {
             pan.setOffset({
                 x: 0,
@@ -106,20 +103,65 @@ const FlashCard = ({ subject, title, question, answer }) => {
                 stopMovementAndReturn();
             }
         },
-        onPanResponderRelease: (event, gestureState) => {
+        onPanResponderRelease(event, gestureState) {
             pan.flattenOffset();
 
             if (Math.abs(gestureState.dx) < 5 && Math.abs(gestureState.dy) < 5) {
-                // Trigger flip if it's a short tap
                 handleFlip();
             } else {
-                // Animate back to center if dragging is not detected
-                Animated.spring(pan, {
-                    toValue: { x: 0, y: 0 },
-                    useNativeDriver: false,
-                }).start();
+                if (flipped && gestureState.dx > windowWidth / 4) {
+                    Animated.timing(pan, {
+                        toValue: { x: windowWidth, y: 0 },
+                        duration: 100,
+                        useNativeDriver: false,
+                    }).start(() => {
+                        onSwipe?.('correct');
+                        handleFlip(true);
+                        pan.setValue({ x: 0, y: windowHeight });
+                        Animated.spring(pan, {
+                            toValue: { x: 0, y: 0 },
+                            useNativeDriver: false,
+                        }).start(() => {
+                        });
+                    });
+                } else if (flipped && gestureState.dx < -windowWidth / 4) {
+                    Animated.timing(pan, {
+                        toValue: { x: -windowWidth, y: 0 },
+                        duration: 100,
+                        useNativeDriver: false,
+                    }).start(() => {
+                        onSwipe?.('incorrect');
+                        handleFlip(true);
+                        pan.setValue({ x: 0, y: windowHeight });
+                        Animated.spring(pan, {
+                            toValue: { x: 0, y: 0 },
+                            useNativeDriver: false,
+                        }).start(() => {
+                        });
+                    });
+                } else if (flipped && gestureState.dy < -windowHeight / 5) {
+                    Animated.timing(pan, {
+                        toValue: { x: 0, y: -windowHeight },
+                        duration: 100,
+                        useNativeDriver: false,
+                    }).start(() => {
+                        onSwipe?.('not sure');
+                        handleFlip(true);
+                        pan.setValue({ x: 0, y: windowHeight });
+                        Animated.spring(pan, {
+                            toValue: { x: 0, y: 0 },
+                            useNativeDriver: false,
+                        }).start(() => {
+                        });
+                    });
+                } else {
+                    Animated.spring(pan, {
+                        toValue: { x: 0, y: 0 },
+                        useNativeDriver: false,
+                    }).start();
+                }
             }
-        },
+        }
     });
 
     return (
@@ -141,7 +183,7 @@ const FlashCard = ({ subject, title, question, answer }) => {
                             transform: [
                                 { translateX: pan.x },
                                 { translateY: pan.y },
-                                { rotate: tilt }, // Apply tilt based on drag
+                                { rotate: tilt },
                             ],
                         },
                     ]}
@@ -194,7 +236,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         width: 250,
         height: 450,
-        backfaceVisibility: "hidden", // Hide the back side when flipped
+        backfaceVisibility: "hidden",
         borderRadius: 12,
         borderWidth: 2,
         borderColor: Colors.highlight1,
@@ -205,7 +247,7 @@ const styles = StyleSheet.create({
     },
     back: {
         backgroundColor: Colors.secondary,
-        transform: [{ rotateY: "180deg" }], // Start flipped
+        transform: [{ rotateY: "180deg" }],
     },
     subject: {
         backgroundColor: Colors.highlight1,
@@ -224,7 +266,7 @@ const styles = StyleSheet.create({
         marginTop: rem(1.5),
     },
     leftBox: {
-        height: '60%',
+        height: '80%',
         width: '10%',
         maxWidth: 40,
         position: "absolute",
@@ -232,7 +274,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.danger
     },
     rightBox: {
-        height: '60%',
+        height: '80%',
         width: '10%',
         maxWidth: 40,
         position: "absolute",
