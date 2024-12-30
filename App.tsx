@@ -1,14 +1,12 @@
 import React from "react";
-import {Platform, SafeAreaView, StyleSheet, Text, View} from "react-native";
-import {BlurView} from "expo-blur";
-import {TextTypes} from "./constants/TextTypes";
-import FlashCard from "./components/flashCard/FlashCard";
+import {StatusBar, StyleSheet, View} from "react-native";
 import {Colors} from "./constants/Colors";
 import FlashCardSeries from "./components/flashCard/FlashCardSeries";
 
 export default function App() {
     return (
         <View style={styles.container}>
+            <StatusBar barStyle="light-content" />
             <FlashCardSeries flashCardDataList={
                 [
                     {
@@ -19,9 +17,51 @@ export default function App() {
                     },
                     {
                         subject: "Analyse 1",
-                        title: "Dérivation I",
-                        question: "Quelle est la dérivée de: \n$\\frac{u(x)}{v(x)}$ ?",
-                        answer: "\\[ \\frac{u'(x) v(x) - u(x) v'(x)}{v(x)^{2}} \\]"
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
+                    },
+                    {
+                        subject: "Analyse 1",
+                        title: "Dérivation II",
+                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
+                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
                     },
                 ]
             }></FlashCardSeries>

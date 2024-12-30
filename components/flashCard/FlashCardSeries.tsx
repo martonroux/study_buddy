@@ -1,6 +1,7 @@
 import React, {useState} from "react";
-import {StyleSheet, View} from "react-native";
+import {SafeAreaView, StyleSheet, View} from "react-native";
 import FlashCard from "./FlashCard";
+import ProgressBar from "./ProgressBar";
 
 type FlashCardData = {
     subject: string,
@@ -31,6 +32,9 @@ const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({flashCardDataList}) =>
                        onSwipe={onSwipe}>
 
             </FlashCard>
+            <SafeAreaView style={{ position: 'absolute', top: 0, left: 0, right: 0}}>
+                <ProgressBar max={flashCardDataList.length} progress={cardIdx}/>
+            </SafeAreaView>
         </View>
     );
 };
