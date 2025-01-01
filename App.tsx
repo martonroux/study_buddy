@@ -1,75 +1,51 @@
-import React from "react";
-import {StatusBar, StyleSheet, View} from "react-native";
+import React, {useEffect, useState} from "react";
+import {ActivityIndicator, StatusBar, StyleSheet, View} from "react-native";
 import {Colors} from "./constants/Colors";
 import FlashCardSeries from "./components/flashCard/FlashCardSeries";
+import {fetchUserSeries} from "./hooks/flashCard/fetchUserSeries";
+import {fetchFlashCardByID} from "./hooks/flashCard/fetchFlashCardByID";
 
 export default function App() {
+    const [subjects, setSubjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const subjects = await fetchUserSeries("Thawyn");
+                setSubjects(subjects);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();  // Call the async function
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="small" color={Colors.primary} />
+            </View>
+        );
+    }
+
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
-            <FlashCardSeries flashCardDataList={
-                [
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation I",
-                        question: "Quelle est la dérivée de: \n$\\frac{u(x)}{v(x)}$ ?",
-                        answer: "\\[ \\frac{u'(x) v(x) - u(x) v'(x)}{v(x)^{2}} \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                    {
-                        subject: "Analyse 1",
-                        title: "Dérivation II",
-                        question: "Quelle est la dérivée de: \n$u(x) \\times v(x)$ ?",
-                        answer: "\\[ u'(x)v(x) + u(x)v'(x) \\]"
-                    },
-                ]
-            }></FlashCardSeries>
+            <FlashCardSeries username={'Thawyn'} subject={subjects[0]}/>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     container: {
         flex: 1,
         backgroundColor: '#000',
