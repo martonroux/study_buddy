@@ -3,7 +3,6 @@ import {ActivityIndicator, StatusBar, StyleSheet, View} from "react-native";
 import {Colors} from "./constants/Colors";
 import FlashCardSeries from "./components/flashCard/FlashCardSeries";
 import {fetchUserSeries} from "./hooks/flashCard/fetchUserSeries";
-import {fetchFlashCardByID} from "./hooks/flashCard/fetchFlashCardByID";
 
 export default function App() {
     const [subjects, setSubjects] = useState([]);
@@ -21,7 +20,7 @@ export default function App() {
             }
         };
 
-        fetchData();  // Call the async function
+        fetchData();
     }, []);
 
     if (loading) {

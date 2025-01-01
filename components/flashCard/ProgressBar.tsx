@@ -12,9 +12,9 @@ const ProgressBar:React.FC<ProgressBar> = ({max, progress}) => {
     return (
         <View style={styles.mainProgressBar}>
             <View style={styles.fullProgressBar}>
-                <View style={[styles.actualProgressBar, { width: `${((progress + 1) / max)* 100}%` }]}>
+                <View style={[styles.actualProgressBar, { width: `${(progress / max)* 100}%` }]}>
                 </View>
-                <Text style={[TextTypes.p, styles.progressText]}>{max - (progress + 1)}</Text>
+                <Text style={[TextTypes.p, styles.progressText]}>{max - progress}</Text>
             </View>
         </View>
     );

@@ -1,9 +1,10 @@
-import React, {useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native";
 import FlashCard from "./FlashCard";
 import ProgressBar from "./ProgressBar";
 import {fetchFlashCardByID, FlashCardData} from "../../hooks/flashCard/fetchFlashCardByID"
 import {Colors} from "../../constants/Colors";
+import {fetchUserSeriesCardIDs} from "../../hooks/flashCard/fetchUserSeriesCardIDs";
 
 type FlashCardSeriesProps = {
     username: string;
@@ -12,7 +13,7 @@ type FlashCardSeriesProps = {
 
 const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) => {
     const [cardIdx, setCardIdx] = useState(0);
-    const [flashCardList, setFlashCardList] = useState([]);
+    const [flashCardList, setFlashCardList]: [FlashCardData[], Dispatch<SetStateAction<FlashCardData[]>>] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -20,9 +21,13 @@ const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) =>
         const fetchData = async () => {
             setLoading(true);  // Set loading to true when fetch starts
             try {
-                const flashCard = await fetchFlashCardByID(1, subject);
-                setFlashCardList([flashCard]);  // Update the state with the fetched data as an array
-                console.log(flashCard.id, flashCard.title, flashCard.question, flashCard.answer);  // Log the flashCard properties
+                const fcIDs = await fetchUserSeriesCardIDs(username, subject);
+
+                for (let i = 0; i < fcIDs.length; i++) {
+                    const flashCard = await fetchFlashCardByID(fcIDs[i], subject);
+                    flashCardList.push(flashCard)
+                    setFlashCardList(flashCardList);
+                }
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -34,9 +39,8 @@ const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) =>
     }, []);
 
     const onSwipe = (outcome) => {
-        console.log(outcome);
-        if (flashCardList.length - 1 > cardIdx)
-            setCardIdx(cardIdx + 1);
+        setCardIdx(cardIdx + 1);
+        console.log(cardIdx);
     };
 
     if (loading) {
@@ -47,21 +51,29 @@ const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) =>
         );
     }
 
-    // After loading, render FlashCard and ProgressBar
+    if (cardIdx < flashCardList.length)
+        return (
+            <View style={styles.main}>
+                <FlashCard
+                    title={flashCardList[cardIdx].title}
+                    subject={flashCardList[cardIdx].subject}
+                    question={flashCardList[cardIdx].question}
+                    answer={flashCardList[cardIdx].answer}
+                    onSwipe={onSwipe}
+                />
+                <SafeAreaView style={{position: 'absolute', top: 0, left: 0, right: 0}}>
+                    <ProgressBar max={flashCardList.length} progress={cardIdx} />
+                </SafeAreaView>
+            </View>
+        );
+
     return (
         <View style={styles.main}>
-            <FlashCard
-                title={flashCardList[cardIdx].title}
-                subject={flashCardList[cardIdx].subject}
-                question={flashCardList[cardIdx].question}
-                answer={flashCardList[cardIdx].answer}
-                onSwipe={onSwipe}
-            />
             <SafeAreaView style={{position: 'absolute', top: 0, left: 0, right: 0}}>
                 <ProgressBar max={flashCardList.length} progress={cardIdx} />
             </SafeAreaView>
         </View>
-    );
+    )
 };
 
 const styles = StyleSheet.create({

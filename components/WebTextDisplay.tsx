@@ -1,6 +1,8 @@
 import {Platform, StyleSheet, View} from "react-native";
 import {WebView} from "react-native-webview";
 import React from "react";
+import {Simulate} from "react-dom/test-utils";
+import input = Simulate.input;
 
 function addLineBreaks(inputString) {
     let escapedString = inputString.replace(/(\\[^a-zA-Z0-9\[\]])/g, '<<BACKSLASH>>$1');
