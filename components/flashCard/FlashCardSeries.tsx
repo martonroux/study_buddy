@@ -2,18 +2,19 @@ import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native";
 import FlashCard from "./FlashCard";
 import ProgressBar from "./ProgressBar";
-import {fetchFlashCardByID, FlashCardData} from "../../hooks/flashCard/fetchFlashCardByID"
+import {fetchFlashCardByID} from "../../hooks/flashCard/fetchFlashCardByID"
 import {Colors} from "../../constants/Colors";
 import {fetchUserSeriesCardIDs} from "../../hooks/flashCard/fetchUserSeriesCardIDs";
+import {FlashCardType, SubjectType} from "../../constants/DataTypes";
 
 type FlashCardSeriesProps = {
     username: string;
-    subject: string;
+    subject: SubjectType;
 };
 
 const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) => {
     const [cardIdx, setCardIdx] = useState(0);
-    const [flashCardList, setFlashCardList]: [FlashCardData[], Dispatch<SetStateAction<FlashCardData[]>>] = useState([]);
+    const [flashCardList, setFlashCardList]: [FlashCardType[], Dispatch<SetStateAction<FlashCardType[]>>] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -56,9 +57,10 @@ const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) =>
             <View style={styles.main}>
                 <FlashCard
                     title={flashCardList[cardIdx].title}
-                    subject={flashCardList[cardIdx].subject}
+                    subject={flashCardList[cardIdx].subject.name}
                     question={flashCardList[cardIdx].question}
                     answer={flashCardList[cardIdx].answer}
+                    color={flashCardList[cardIdx].subject.color}
                     onSwipe={onSwipe}
                 />
                 <SafeAreaView style={{position: 'absolute', top: 0, left: 0, right: 0}}>

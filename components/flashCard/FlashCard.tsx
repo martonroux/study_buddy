@@ -7,7 +7,7 @@ import {FlashCardFace} from "./FlashCardFace";
 import {Dimensions} from 'react-native';
 
 
-const FlashCard = ({ subject, title, question, answer, onSwipe }) => {
+const FlashCard = ({ subject, title, question, answer, color, onSwipe }) => {
     const [flipped, setFlipped] = useState(false);
     const [stopMovement, setStopMovement] = useState(false);
     const flipAnimation = useRef(new Animated.Value(0)).current;
@@ -193,10 +193,11 @@ const FlashCard = ({ subject, title, question, answer, onSwipe }) => {
                         style={[
                             styles.flashcard,
                             styles.front,
+                            { borderColor: color },
                             { transform: [{ rotateY: frontRotation }] },
                         ]}
                     >
-                        <FlashCardFace title={title} subject={subject} text={question} subjectColor={Colors.highlight1}/>
+                        <FlashCardFace title={title} subject={subject} text={question} subjectColor={color}/>
                     </Animated.View>
 
                     {/* Back Side */}
@@ -204,10 +205,11 @@ const FlashCard = ({ subject, title, question, answer, onSwipe }) => {
                         style={[
                             styles.flashcard,
                             styles.back,
+                            { borderColor: color },
                             { transform: [{ rotateY: backRotation }] },
                         ]}
                     >
-                        <FlashCardFace title={"Réponse"} subject={subject} text={answer} subjectColor={Colors.highlight1}/>
+                        <FlashCardFace title={"Réponse"} subject={subject} text={answer} subjectColor={color}/>
                     </Animated.View>
                 </Animated.View>
             </SafeAreaView>
@@ -239,7 +241,6 @@ const styles = StyleSheet.create({
         backfaceVisibility: "hidden",
         borderRadius: 12,
         borderWidth: 2,
-        borderColor: Colors.highlight1,
         padding: rem(1),
     },
     front: {
@@ -250,7 +251,6 @@ const styles = StyleSheet.create({
         transform: [{ rotateY: "180deg" }],
     },
     subject: {
-        backgroundColor: Colors.highlight1,
         borderRadius: 4,
         paddingVertical: rem(0.2),
         paddingHorizontal: rem(0.6),

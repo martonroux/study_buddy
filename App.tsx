@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {ActivityIndicator, StatusBar, StyleSheet, View} from "react-native";
 import {Colors} from "./constants/Colors";
 import FlashCardSeries from "./components/flashCard/FlashCardSeries";
 import {fetchUserSeries} from "./hooks/flashCard/fetchUserSeries";
+import {SubjectType} from "./constants/DataTypes";
 
 export default function App() {
-    const [subjects, setSubjects] = useState([]);
+    const [subjects, setSubjects]: [SubjectType[], Dispatch<SetStateAction<SubjectType[]>>] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
