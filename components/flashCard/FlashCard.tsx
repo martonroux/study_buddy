@@ -115,7 +115,7 @@ const FlashCard = ({ subject, title, question, answer, color, onSwipe }) => {
                         duration: 100,
                         useNativeDriver: false,
                     }).start(() => {
-                        onSwipe?.('correct');
+                        onSwipe?.('good');
                         handleFlip(true);
                         pan.setValue({ x: 0, y: windowHeight });
                         Animated.spring(pan, {
@@ -130,7 +130,7 @@ const FlashCard = ({ subject, title, question, answer, color, onSwipe }) => {
                         duration: 100,
                         useNativeDriver: false,
                     }).start(() => {
-                        onSwipe?.('incorrect');
+                        onSwipe?.('bad');
                         handleFlip(true);
                         pan.setValue({ x: 0, y: windowHeight });
                         Animated.spring(pan, {
@@ -145,7 +145,7 @@ const FlashCard = ({ subject, title, question, answer, color, onSwipe }) => {
                         duration: 100,
                         useNativeDriver: false,
                     }).start(() => {
-                        onSwipe?.('not sure');
+                        onSwipe?.('ok');
                         handleFlip(true);
                         pan.setValue({ x: 0, y: windowHeight });
                         Animated.spring(pan, {

@@ -4,7 +4,7 @@ import {Colors} from "../../../constants/Colors";
 import {TextTypes} from "../../../constants/TextTypes";
 import EndOfSeriesGraduation from "./EndOfSeriesGraduation";
 
-type EndOfSeriesStatBarType = {
+export type EndOfSeriesStatBarType = {
     amountGood: number,
     amountOK: number,
     amountBad: number
@@ -31,7 +31,7 @@ const EndOfSeriesStatBar: React.FC<EndOfSeriesStatBarProps> = ({before, now}) =>
         });
 
         Animated.sequence([
-            Animated.delay(500),
+            Animated.delay(1000),
             Animated.parallel([
                 Animated.timing(goodWidth, {
                     toValue: (now.amountGood / totalNow) * 100,

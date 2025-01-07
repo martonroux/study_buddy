@@ -1,5 +1,5 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
-import {ActivityIndicator, SafeAreaView, StyleSheet, View} from "react-native";
+import React, {Dispatch, SetStateAction, useEffect, useRef, useState} from "react";
+import {ActivityIndicator, SafeAreaView, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import FlashCard from "./FlashCard";
 import ProgressBar from "./ProgressBar";
 import {fetchFlashCardByID} from "../../hooks/flashCard/fetchFlashCardByID"
@@ -7,6 +7,7 @@ import {Colors} from "../../constants/Colors";
 import {fetchUserSeriesCardIDs} from "../../hooks/flashCard/fetchUserSeriesCardIDs";
 import {FlashCardType, SubjectType} from "../../constants/DataTypes";
 import EndOfSeriesStats from "./endOfSeries/EndOfSeriesStats";
+import {rem, TextTypes} from "../../constants/TextTypes";
 
 type FlashCardSeriesProps = {
     username: string;
@@ -18,6 +19,9 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     const [cardIdx, setCardIdx] = useState(0);
     const [flashCardList, setFlashCardList]: [FlashCardType[], Dispatch<SetStateAction<FlashCardType[]>>] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [amountGood, setAmountGood] = useState(0);
+    const [amountOK, setAmountOK] = useState(0);
+    const [amountBad, setAmountBad] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -41,8 +45,19 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     }, []);
 
     const onSwipe = (outcome) => {
+        if (outcome === "good")
+            setAmountGood(amountGood + 1);
+        if (outcome === "ok")
+            setAmountOK(amountOK + 1);
+        if (outcome === "bad")
+            setAmountBad(amountBad + 1);
+
         setCardIdx(cardIdx + 1);
     };
+
+    const goHome = () => {
+        navigation.goBack();
+    }
 
     if (loading) {
         return (
@@ -72,7 +87,14 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     return (
         <View style={styles.main}>
             <SafeAreaView style={{position: 'absolute', top: 0, left: 0, right: 0}}>
-                <EndOfSeriesStats subject={subject} amountCards={12} amountGood={8} amountOK={3} amountBad={1} amountNewLearned={3} />
+                <EndOfSeriesStats subject={subject} before={{amountGood: 0, amountOK: 0, amountBad: 1}} now={{amountOK: amountOK, amountGood: amountGood, amountBad: amountBad}} />
+                <View style={styles.flexCenter}>
+                    <TouchableOpacity style={styles.homeButton} onPress={goHome}>
+                        <Text style={[TextTypes.p, {fontWeight: 500}]}>
+                            Menu
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </SafeAreaView>
         </View>
     )
@@ -87,6 +109,17 @@ const styles = StyleSheet.create({
     main: {
         flex: 1,
         backgroundColor: '#000',
+    },
+    flexCenter: {
+        flex: 1,
+        width: '100%',
+        alignItems: 'center',
+        flexDirection: 'column',
+    },
+    homeButton: {
+        backgroundColor: Colors.primary,
+        borderRadius: 4,
+        padding: rem(0.7),
     }
 });
 
