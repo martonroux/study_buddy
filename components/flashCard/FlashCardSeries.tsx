@@ -6,6 +6,7 @@ import {fetchFlashCardByID} from "../../hooks/flashCard/fetchFlashCardByID"
 import {Colors} from "../../constants/Colors";
 import {fetchUserSeriesCardIDs} from "../../hooks/flashCard/fetchUserSeriesCardIDs";
 import {FlashCardType, SubjectType} from "../../constants/DataTypes";
+import EndOfSeriesStats from "./endOfSeries/EndOfSeriesStats";
 
 type FlashCardSeriesProps = {
     username: string;
@@ -19,9 +20,8 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Define the async function
         const fetchData = async () => {
-            setLoading(true);  // Set loading to true when fetch starts
+            setLoading(true);
             try {
                 const fcIDs = await fetchUserSeriesCardIDs(username, subject);
 
@@ -33,18 +33,15 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
-                setLoading(false);  // Set loading to false after data is fetched
+                setLoading(false);
             }
         };
 
-        fetchData();  // Call the async function
+        fetchData();
     }, []);
 
     const onSwipe = (outcome) => {
-        if (cardIdx == flashCardList.length - 1)
-            navigation.goBack();
-        else
-            setCardIdx(cardIdx + 1);
+        setCardIdx(cardIdx + 1);
     };
 
     if (loading) {
@@ -75,7 +72,7 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     return (
         <View style={styles.main}>
             <SafeAreaView style={{position: 'absolute', top: 0, left: 0, right: 0}}>
-                <ProgressBar max={flashCardList.length} progress={cardIdx} />
+                <EndOfSeriesStats subject={subject} amountCards={12} amountGood={8} amountOK={3} amountBad={1} amountNewLearned={3} />
             </SafeAreaView>
         </View>
     )
