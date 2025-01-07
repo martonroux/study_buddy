@@ -16,6 +16,6 @@ export const fetchFlashCardByID = async (id: number, subject: SubjectType) => {
 
         return flashCard
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data [fetchFlashCardByID]:', error);
     }
 };

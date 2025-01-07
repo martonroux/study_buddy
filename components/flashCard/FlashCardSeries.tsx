@@ -12,7 +12,8 @@ type FlashCardSeriesProps = {
     subject: SubjectType;
 };
 
-const FlashCardSeries: React.FC<FlashCardSeriesProps> = ({username, subject}) => {
+const FlashCardSeries: React.FC<{ route: any }> = ({route}) => {
+    const {username, subject}: FlashCardSeriesProps = route.params;
     const [cardIdx, setCardIdx] = useState(0);
     const [flashCardList, setFlashCardList]: [FlashCardType[], Dispatch<SetStateAction<FlashCardType[]>>] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -85,7 +86,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     main: {
-
+        flex: 1,
+        backgroundColor: '#000',
     }
 });
 

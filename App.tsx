@@ -1,42 +1,28 @@
-import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
-import {ActivityIndicator, StatusBar, StyleSheet, View} from "react-native";
+import React from "react";
+import {StatusBar, StyleSheet, View} from "react-native";
 import {Colors} from "./constants/Colors";
+import {NavigationContainer} from "@react-navigation/native";
+import {createNativeStackNavigator} from "@react-navigation/native-stack";
+import HomePage from "./components/HomePage";
 import FlashCardSeries from "./components/flashCard/FlashCardSeries";
-import {fetchUserSeries} from "./hooks/flashCard/fetchUserSeries";
 import {SubjectType} from "./constants/DataTypes";
 
+type RootStackParamList = {
+    HomePage: undefined;
+    FlashCardSeries: { username: string, subject: SubjectType };
+};
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 export default function App() {
-    const [subjects, setSubjects]: [SubjectType[], Dispatch<SetStateAction<SubjectType[]>>] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const subjects = await fetchUserSeries("Thawyn");
-                setSubjects(subjects);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    if (loading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator size="small" color={Colors.primary} />
-            </View>
-        );
-    }
 
     return (
-        <View style={styles.container}>
-            <StatusBar barStyle="light-content" />
-            <FlashCardSeries username={'Thawyn'} subject={subjects[0]}/>
-        </View>
+        <NavigationContainer>
+            <Stack.Navigator id={undefined}>{/* No idea why id=undefined suppresses a TypeScript error */}
+                <Stack.Screen name={'HomePage'} component={HomePage} options={{headerShown: false}}/>
+                <Stack.Screen name={'FlashCardSeries'} component={FlashCardSeries} options={{headerShown: false}}/>
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 
@@ -45,12 +31,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    container: {
-        flex: 1,
-        backgroundColor: '#000',
-        justifyContent: 'center',
-        alignItems: 'center'
     },
     webViewStyle: {
         padding: 60,

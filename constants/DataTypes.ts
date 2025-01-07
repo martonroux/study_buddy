@@ -1,7 +1,8 @@
 export type SubjectType = {
     name: string,
     color: string,
-    id: number
+    id: number,
+    lastUsed: number
 }
 
 export type FlashCardType = {

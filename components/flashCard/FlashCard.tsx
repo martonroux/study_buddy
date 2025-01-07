@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
         maxWidth: 40,
         position: "absolute",
         left: 0,
-        backgroundColor: Colors.danger
+        backgroundColor: Colors.danger,
     },
     rightBox: {
         height: '80%',
@@ -279,16 +279,15 @@ const styles = StyleSheet.create({
         maxWidth: 40,
         position: "absolute",
         right: 0,
-        backgroundColor: Colors.success
+        backgroundColor: Colors.success,
     },
     topBox: {
-        height: '15%',
+        height: 80,
         width: '75%',
-        maxHeight: 50,
         maxWidth: 500,
         position: "absolute",
         top: 0,
-        backgroundColor: Colors.warning
+        backgroundColor: Colors.warning,
     },
     leftRightImages: {
         height: '100%',

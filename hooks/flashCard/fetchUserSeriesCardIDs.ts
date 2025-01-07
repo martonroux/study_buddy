@@ -12,6 +12,6 @@ export const fetchUserSeriesCardIDs = async (username: string, subject: SubjectT
         }
         return result
     } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data [fetchUserSeriesCardIDs]:', error);
     }
 };
