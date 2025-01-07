@@ -1,9 +1,10 @@
 import axios from "axios";
 import {SubjectType} from "../../constants/DataTypes";
+import {ServerIP} from "../../constants/Server";
 
 export const fetchUserSeries = async (username: string) : Promise<SubjectType[]> => {
     try {
-        const response = await axios.get(`http://192.168.0.104:8080/get-subjects?username=${username}`);
+        const response = await axios.get(`${ServerIP}/get-subjects?username=${username}`);
 
         let subjects: SubjectType[] = []
 
