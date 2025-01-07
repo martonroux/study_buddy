@@ -12,7 +12,7 @@ type FlashCardSeriesProps = {
     subject: SubjectType;
 };
 
-const FlashCardSeries: React.FC<{ route: any }> = ({route}) => {
+const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation, route}) => {
     const {username, subject}: FlashCardSeriesProps = route.params;
     const [cardIdx, setCardIdx] = useState(0);
     const [flashCardList, setFlashCardList]: [FlashCardType[], Dispatch<SetStateAction<FlashCardType[]>>] = useState([]);
@@ -41,8 +41,10 @@ const FlashCardSeries: React.FC<{ route: any }> = ({route}) => {
     }, []);
 
     const onSwipe = (outcome) => {
-        setCardIdx(cardIdx + 1);
-        console.log(cardIdx);
+        if (cardIdx == flashCardList.length - 1)
+            navigation.goBack();
+        else
+            setCardIdx(cardIdx + 1);
     };
 
     if (loading) {

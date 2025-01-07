@@ -1,8 +1,7 @@
-import {Platform, StyleSheet, View} from "react-native";
+import {ActivityIndicator, Platform, StyleSheet, View} from "react-native";
 import {WebView} from "react-native-webview";
-import React from "react";
-import {Simulate} from "react-dom/test-utils";
-import input = Simulate.input;
+import React, {useState} from "react";
+import {Colors} from "../constants/Colors";
 
 function addLineBreaks(inputString) {
     let escapedString = inputString.replace(/(\\[^a-zA-Z0-9\[\]])/g, '<<BACKSLASH>>$1');
@@ -52,6 +51,17 @@ function convertReactStyleToCSS(style, tag) {
 
 export default function WebTextDisplay({input, textStyle, bodyStyle}) {
     const isWeb = Platform.OS === 'web';
+    const [loading, setLoading] = useState(true);
+
+    const handleLoadStart = () => {
+        console.log("Start loading")
+        setLoading(true);
+    };
+
+    const handleLoadEnd = () => {
+        console.log("End loading")
+        setLoading(false);
+    };
 
     const mathJaxHTML = `
     <!DOCTYPE html>
@@ -96,13 +106,27 @@ export default function WebTextDisplay({input, textStyle, bodyStyle}) {
                     style={styles.webview}
                 />
             ) : (
-                <WebView
-                    originWhitelist={['*']}
-                    source={{ html: mathJaxHTML }}
-                    style={styles.webview}
-                    scrollEnabled={false}
-                    nestedScrollEnabled={false}
-                />
+                <>
+                    {loading && (
+                    <View style={[styles.loading, {zIndex: 1}]}>
+                        <ActivityIndicator size="small" color={Colors.text} />
+                    </View>
+                    )}
+                    <WebView
+                        originWhitelist={['*']}
+                        source={{ html: mathJaxHTML }}
+                        style={styles.webview}
+                        scrollEnabled={false}
+                        nestedScrollEnabled={false}
+                        onNavigationStateChange={(navState) => {
+                            if (navState.loading) {
+                                setLoading(true);
+                            } else {
+                                setLoading(false);
+                            }
+                        }}
+                    />
+                </>
             )}
         </View>
     );
@@ -117,4 +141,14 @@ const styles = StyleSheet.create({
         flex: 1,
         overflow: 'hidden'
     },
+    loading: {
+        backgroundColor: Colors.secondary,
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
+    }
 });
