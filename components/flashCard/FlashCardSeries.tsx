@@ -8,6 +8,7 @@ import {fetchUserSeriesCardIDs} from "../../hooks/flashCard/fetchUserSeriesCardI
 import {FlashCardType, SubjectType} from "../../constants/DataTypes";
 import EndOfSeriesStats from "./endOfSeries/EndOfSeriesStats";
 import {rem, TextTypes} from "../../constants/TextTypes";
+import {EndOfSeriesStatBarType} from "./endOfSeries/EndOfSeriesStatBar";
 
 type FlashCardSeriesProps = {
     username: string;
@@ -19,21 +20,35 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     const [cardIdx, setCardIdx] = useState(0);
     const [flashCardList, setFlashCardList]: [FlashCardType[], Dispatch<SetStateAction<FlashCardType[]>>] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [amountGood, setAmountGood] = useState(0);
-    const [amountOK, setAmountOK] = useState(0);
-    const [amountBad, setAmountBad] = useState(0);
+    const [beforeStats, setBeforeStats]: [EndOfSeriesStatBarType, Dispatch<SetStateAction<EndOfSeriesStatBarType>>] = useState({amountGood: 0, amountBad: 0, amountOK: 0});
+    const [nowStats, setNowStats]: [EndOfSeriesStatBarType, Dispatch<SetStateAction<EndOfSeriesStatBarType>>] = useState({amountGood: 0, amountBad: 0, amountOK: 0});
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
                 const fcIDs = await fetchUserSeriesCardIDs(username, subject);
+                let nbGood = 0;
+                let nbOK = 0;
+                let nbBad = 0;
 
                 for (let i = 0; i < fcIDs.length; i++) {
                     const flashCard = await fetchFlashCardByID(fcIDs[i], subject);
                     flashCardList.push(flashCard)
                     setFlashCardList(flashCardList);
+
+                    if (flashCard.lastResult == 0) nbGood += 1;
+                    else if (flashCard.lastResult == 1) nbOK += 1;
+                    else if (flashCard.lastResult == 2) nbBad += 1;
                 }
+
+                setBeforeStats(
+                    {
+                        amountGood: nbGood,
+                        amountOK: nbOK,
+                        amountBad: nbBad
+                    }
+                )
             } catch (error) {
                 console.error("Error fetching data:", error);
             } finally {
@@ -46,11 +61,11 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
 
     const onSwipe = (outcome) => {
         if (outcome === "good")
-            setAmountGood(amountGood + 1);
+            setNowStats({amountGood: nowStats.amountGood + 1, amountOK: nowStats.amountOK, amountBad: nowStats.amountBad})
         if (outcome === "ok")
-            setAmountOK(amountOK + 1);
+            setNowStats({amountGood: nowStats.amountGood, amountOK: nowStats.amountOK + 1, amountBad: nowStats.amountBad})
         if (outcome === "bad")
-            setAmountBad(amountBad + 1);
+            setNowStats({amountGood: nowStats.amountGood, amountOK: nowStats.amountOK, amountBad: nowStats.amountBad + 1})
 
         setCardIdx(cardIdx + 1);
     };
@@ -87,7 +102,7 @@ const FlashCardSeries: React.FC<{ navigation: any, route: any }> = ({navigation,
     return (
         <View style={styles.main}>
             <SafeAreaView style={{position: 'absolute', top: 0, left: 0, right: 0}}>
-                <EndOfSeriesStats subject={subject} before={{amountGood: 0, amountOK: 0, amountBad: 1}} now={{amountOK: amountOK, amountGood: amountGood, amountBad: amountBad}} />
+                <EndOfSeriesStats subject={subject} before={beforeStats} now={nowStats} />
                 <View style={styles.flexCenter}>
                     <TouchableOpacity style={styles.homeButton} onPress={goHome}>
                         <Text style={[TextTypes.p, {fontWeight: 500}]}>

@@ -26,7 +26,9 @@ const EndOfSeriesStats: React.FC<EndOfSeriesStatsProps> = ({subject, before, now
                             +{now.amountGood - before.amountGood}
                         </Text>
                     </View>
-                    <Text style={[TextTypes.p, {fontWeight: 500}]}>Cartes apprises</Text>
+                    <Text style={[TextTypes.p, {fontWeight: 500}]}>
+                        Carte{now.amountGood - before.amountGood > 1 && 's'} apprise{now.amountGood - before.amountGood > 1 && 's'}
+                    </Text>
                 </View>
                 <View style={styles.flexColumnCentered}>
                     <View style={{backgroundColor: Colors.highlight1, borderRadius: 4, padding: rem(0.7)}}>
@@ -34,13 +36,15 @@ const EndOfSeriesStats: React.FC<EndOfSeriesStatsProps> = ({subject, before, now
                             {(now.amountBad - before.amountBad) >= 0 ? '+' : ''}{now.amountBad - before.amountBad}
                         </Text>
                     </View>
-                    <Text style={[TextTypes.p, {fontWeight: 500}]}>Cartes ratées</Text>
+                    <Text style={[TextTypes.p, {fontWeight: 500}]}>
+                        Carte{now.amountBad - before.amountBad > 1 && 's'} ratée{now.amountBad - before.amountBad > 1 && 's'}
+                    </Text>
                 </View>
             </View>
             {
                 (now.amountOK + now.amountBad > 0) && (
                     <TouchableOpacity style={[styles.startOverButton, {marginTop: 20}]}>
-                        <Text style={[TextTypes.p, {fontWeight: 600}]}>Refaire les plus difficiles ({now.amountOK + now.amountBad}/{now.amountBad + now.amountOK + now.amountGood})</Text>
+                        <Text style={[TextTypes.p, {fontWeight: 600}]}>Refaire {now.amountOK + now.amountBad > 1 ? 'les' : 'la'} plus difficile{now.amountOK + now.amountBad > 1 && 's'} ({now.amountOK + now.amountBad}/{now.amountBad + now.amountOK + now.amountGood})</Text>
                     </TouchableOpacity>
                 )
             }

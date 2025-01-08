@@ -11,6 +11,7 @@ export const fetchFlashCardByID = async (id: number, subject: SubjectType) => {
             title: response.data["title"],
             question: response.data["question"],
             answer: response.data["answer"],
+            lastResult: response.data["lastResult"],
             subject: subject
         }
 

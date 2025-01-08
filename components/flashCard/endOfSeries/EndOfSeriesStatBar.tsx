@@ -20,9 +20,9 @@ const EndOfSeriesStatBar: React.FC<EndOfSeriesStatBarProps> = ({before, now}) =>
     const totalBefore = before.amountGood + before.amountOK + before.amountBad;
     const totalNow = now.amountGood + now.amountOK + now.amountBad;
 
-    const goodWidth = useRef(new Animated.Value((before.amountGood / totalBefore) * 100)).current;
-    const okWidth = useRef(new Animated.Value(((before.amountGood + before.amountOK) / totalBefore) * 100)).current;
-    const [displayedPercentage, setDisplayedPercentage] = useState(Math.round((before.amountGood / totalBefore) * 100));
+    const goodWidth = useRef(new Animated.Value(totalBefore > 0 ? ((before.amountGood / totalBefore) * 100) : 0)).current;
+    const okWidth = useRef(new Animated.Value(totalBefore > 0 ? (((before.amountGood + before.amountOK) / totalBefore) * 100) : 0)).current;
+    const [displayedPercentage, setDisplayedPercentage] = useState(Math.round(totalBefore > 0 ? (before.amountGood / totalBefore) * 100 : 0));
 
 
     useEffect(() => {

@@ -34,6 +34,7 @@ function convertReactStyleToCSS(style, tag) {
         if (styleMap[key]) {
             if (stylesWithPX.includes(styleMap[key])) {
                 if (styleMap[key] === "font-size") {
+                    // @ts-ignore
                     css += `${styleMap[key]}: ${value * 4}px; `;
                 }
                 else

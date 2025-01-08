@@ -13,6 +13,7 @@ export const fetchUserSubjects = async (username: string) : Promise<SubjectType[
                 id: response.data[i].id,
                 name: response.data[i].name,
                 color: response.data[i].color,
+                graphId: response.data[i].graphId,
                 lastUsed: response.data[i].lastUsed
             });
         }
